@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Cahier de français — тренажёр ЕГЭ</title>
+<style>
+  :root{
+    color-scheme: light;
+    --paper: #fbfbfa;
+    --paper-line: #e6e8ee;
+    --ink: #10173a;
+    --ink-soft: #4a5578;
+    --navy: #17275c;
+    --navy-soft: #2c3d7a;
+    --red: #b3272d;
+    --red-soft: #e2a2a0;
+    --green: #2f6b46;
+    --card-shadow: 0 18px 40px rgba(16,23,58,0.10);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html {
+    background: var(--paper);
+    color-scheme: light;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    min-height: 100%;
+  }
+
+  body {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 37px,
+      var(--paper-line) 38px
+    );
+    padding: 0 16px 64px;
+  }
+
+  .flag-bar {
+    height: 5px;
+    margin: 0 -16px 24px;
+    background: linear-gradient(
+      to right,
+      var(--navy) 0%, var(--navy) 33.33%,
+      #ffffff 33.33%, #ffffff 66.66%,
+      var(--red) 66.66%, var(--red) 100%
+    );
+  }
+
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  header.top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-top: 18px;
+    flex-wrap: wrap;
+  }
+
+  header.top h1 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 0.01em;
+    color: var(--navy);
+  }
+
+  header.top .stats {
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+
+  .sheet {
+    position: relative;
+    background: #ffffff;
+    border-radius: 4px;
+    box-shadow: var(--card-shadow);
+    padding: 28px 22px 26px 34px;
+    border: 1px solid #e3e6f0;
+    overflow: hidden;
+  }
+
+  .sheet::before {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--red-soft);
+    opacity: 0.55;
+  }
+
+  .progressbar {
+    height: 6px;
+    background: var(--paper-line);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 22px;
+  }
+  .progressbar > div {
+    height: 100%;
+    background: var(--navy-soft);
+    width: 0%;
+    transition: width 0.35s ease;
+  }
+
+  .theme-tag {
+    display: inline-block;
+    font-size: 0.78rem;
+    color: var(--navy-soft);
+    border: 1px solid var(--paper-line);
+    border-radius: 999px;
+    padding: 3px 12px;
+    margin-bottom: 16px;
+    background: #f2f4fb;
+  }
+
+  .sentence {
+    font-size: 1.28rem;
+    line-height: 1.65;
+    margin-bottom: 6px;
+  }
+
+  .blank {
+    display: inline-block;
+    min-width: 90px;
+    border-bottom: 2px solid var(--ink);
+    text-align: center;
+    padding: 0 4px;
+  }
+
+  .given-word {
+    display: inline-block;
+    margin-top: 4px;
+    margin-bottom: 20px;
+    border: 1.5px solid var(--ink);
+    border-radius: 3px;
+    padding: 4px 12px;
+    font-variant: small-caps;
+    letter-spacing: 0.03em;
+    font-size: 1.05rem;
+    background: #f2f4fb;
+  }
+
+  form.answer-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+  }
+
+  input[type="text"] {
+    flex: 1 1 200px;
+    font-size: 17px;
+    font-family: inherit;
+    color: var(--ink);
+    padding: 12px 14px;
+    min-height: 44px;
+    border: 2px solid var(--navy);
+    border-radius: 6px;
+    background: #ffffff;
+    -webkit-text-fill-color: var(--ink);
+  }
+  input[type="text"]:focus {
+    outline: 3px solid var(--navy-soft);
+    outline-offset: 1px;
+  }
+  input[type="text"]::placeholder {
+    color: #8a90a8;
+  }
+
+  button {
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  button.primary {
+    background: var(--navy);
+    color: #ffffff;
+  }
+  button.primary:active { background: #0c1740; }
+
+  button.secondary {
+    background: transparent;
+    color: var(--navy);
+    border: 2px solid var(--navy);
+  }
+  button.secondary:active { background: #eef1fa; }
+
+  .feedback {
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: 6px;
+    font-size: 1.02rem;
+    line-height: 1.55;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct {
+    background: #eaf3ec;
+    border: 1.5px solid var(--green);
+    color: #294f34;
+  }
+  .feedback.wrong {
+    background: #f8ecea;
+    border: 1.5px solid var(--red);
+    color: var(--red);
+  }
+  .feedback .margin-note {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+
+  .next-row {
+    margin-top: 18px;
+    display: none;
+  }
+  .next-row.show { display: block; }
+
+  .summary h2 {
+    font-size: 1.25rem;
+    margin-top: 0;
+  }
+  .summary ul {
+    padding-left: 20px;
+    margin: 12px 0 22px;
+  }
+  .summary li {
+    margin-bottom: 6px;
+  }
+  .summary .score {
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 4px 0 2px;
+  }
+  .summary .score-label {
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+  }
+
+  .button-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  footer.hint {
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    margin-top: 20px;
+  }
+
+  @media (max-width: 420px) {
+    .sentence { font-size: 1.15rem; }
+    .sheet { padding: 22px 16px 22px 26px; }
+  }
+</style>
+</head>
+<body>
+<div class="flag-bar"></div>
+<div class="wrap">
+  <header class="top">
+    <h1>Cahier de français</h1>
+    <div class="stats" id="statsLine">0 / 0 · верно 0</div>
+  </header>
+
+  <div class="sheet">
+    <div class="progressbar"><div id="progressFill"></div></div>
+
+    <div id="quizArea">
+      <div class="theme-tag" id="themeTag"></div>
+      <div class="sentence" id="sentenceText"></div>
+      <div class="given-word" id="givenWord"></div>
+
+      <form class="answer-row" id="answerForm">
+        <input type="text" id="answerInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Впишите форму слова">
+        <button type="submit" class="primary" id="submitBtn">Ответить</button>
+      </form>
+
+      <div class="feedback" id="feedback"></div>
+
+      <div class="next-row" id="nextRow">
+        <button type="button" class="primary" id="nextBtn">Далее</button>
+      </div>
+    </div>
+
+    <div class="summary" id="summaryArea" style="display:none;">
+      <h2>Занятие завершено</h2>
+      <div class="score" id="scoreText">0 / 0</div>
+      <div class="score-label">правильных ответов с первой попытки</div>
+      <div id="weakThemes"></div>
+      <div class="button-row">
+        <button type="button" class="primary" id="restartAllBtn">Начать заново (все задания)</button>
+        <button type="button" class="secondary" id="restartWeakBtn">Повторить только слабые темы</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="hint">При ошибке правильный ответ показывается сразу, а дальше добавляется ещё пара заданий на ту же тему.</footer>
+</div>
+
+<script>
+(function(){
+
+  // ---------- Данные ----------
+  var TASKS = [
+    {s:"Aujourd'hui, Saint-Pétersbourg est la deuxième ville par son importance après Moscou. Mais c'est aussi la capitale ___ de Russie.", w:"CULTUREL", a:"culturelle", t:"Согласование прилагательных"},
+    {s:"Très souvent, on y organise des festivals et toutes sortes de ___.", w:"FÊTE", a:"fêtes", t:"Множественное число существительных"},
+    {s:"Toute la vie mondaine du 19e siècle a eu lieu là-bas, dans cette ___ ville.", w:"BEAU", a:"belle", t:"Согласование прилагательных"},
+    {s:"Sa grand-mère lui ___ des histoires en allemand.", w:"RACONTER", a:"racontait", t:"Имперфект"},
+    {s:"Un jour, quand il était petit, il ___ trop de noir sur les sabots d'un petit cheval.", w:"METTRE", a:"mettait", t:"Имперфект"},
+    {s:"Quand il a commencé à peindre, il représentait des ___ et des personnages.", w:"CHEVAL", a:"chevaux", t:"Множественное число (исключения)"},
+    {s:"Ce sont eux qui distribuent les prix. La fameuse Palme d'or en fait ___ partie.", w:"ÉGALE", a:"également", t:"Наречия от прилагательных"},
+    {s:"Les artistes sont ___ dans leurs tenues de grands couturiers.", w:"ADMIRER", a:"admirés", t:"Пассивный залог / согласование причастия"},
+    {s:"Tout cela se passe sous les yeux de nombreux ___.", w:"JOURNAL", a:"journaux", t:"Множественное число существительных"},
+    {s:"C'est là qu'on fait le ___ des films.", w:"CLASSER", a:"classement", t:"Отглагольные существительные"},
+
+    {s:"Ce climat, humide et ___ doux en hiver, est proche de ceux de Tallinn et d'Helsinki.", w:"RELATIF", a:"relativement", t:"Наречия от прилагательных"},
+    {s:"De nombreux éléments d'architecture et d'___ sont conçus pour vivre avec le froid.", w:"AMÉNAGER", a:"aménagement", t:"Отглагольные существительные"},
+    {s:"Celui de Saint-Pétersbourg est ___, avec des étés relativement chauds et des hivers rigoureux.", w:"CONTINENT", a:"continental", t:"Образование прилагательных от существительных"},
+    {s:"Parfois, on est ___ englué dans notre routine qu'on ne sait même pas ce qui nous rend heureux.", w:"TELLE", a:"tellement", t:"Наречия"},
+    {s:"Tu ne peux pas transiger avec les règles de la maison, comme participer à l'___.", w:"ORGANISER", a:"organisation", t:"Отглагольные существительные"},
+    {s:"Ne refuse pas systématiquement les ___ qui ne te tentent pas.", w:"PROPOSER", a:"propositions", t:"Отглагольные существительные, мн.ч."},
+    {s:"Ne décharge pas systématiquement de tes devoirs et corvées sur ton ___.", w:"ENTOURER", a:"entourage", t:"Отглагольные существительные (особая форма)"},
+    {s:"Pense aussi à proposer une autre ___.", w:"ACTIVE", a:"activité", t:"Существительные от прилагательных"},
+    {s:"C'est un événement ___ très important.", w:"MONDE", a:"mondial", t:"Образование прилагательных от существительных"},
+    {s:"Ce sont des ___ et des acteurs, français ou étrangers.", w:"RÉALISER", a:"réalisateurs", t:"Отглагольные существительные (деятель), мн.ч."},
+
+    {s:"Chaque enfant emporte chez lui les objets qu'il a réalisés dans cet ___ de rêve.", w:"ENVIRONNER", a:"environnement", t:"Отглагольные существительные"},
+    {s:"Un bon moyen pour les enfants de ___ des professions et de trouver leur voie.", w:"COUVRIR", a:"découvrir", t:"Инфинитив после предлога de"},
+    {s:"Anglais, Russes, Austro-Hongrois sont venus à Nice pour profiter du climat: ces \"touristes\" qui ___ visiter Nice.", w:"VOULOIR", a:"voulaient", t:"Имперфект (повествование в прошлом)"},
+    {s:"Une des grandes attractions était le casino qui ___ sur la mer.", w:"SE TROUVER", a:"se trouvait", t:"Имперфект, возвратные глаголы"},
+    {s:"Les ___ de hasard attiraient le monde entier.", w:"JEU", a:"jeux", t:"Множественное число существительных"},
+    {s:"Le loup n'est pas content de se poser ___ ces questions à propos de ce garçon.", w:"TOUT", a:"toutes", t:"Согласование указательного прилагательного tout"},
+    {s:"Ni pour les ___ qui font les grimaces devant sa cage.", w:"ENFANT", a:"enfants", t:"Множественное число существительных"},
+    {s:"Ni pour l'employé qui ___ jette sa viande de loin.", w:"IL", a:"lui", t:"Ударные (тонические) местоимения"},
+    {s:"\"Voilà, c'est lui, le loup, si tu n'es pas sage tu ___ l'affaire à lui!\"", w:"AVOIR", a:"as", t:"Спряжение avoir, настоящее время"},
+    {s:"Prévois de t'inscrire à l'association ___ de ton collège.", w:"SPORT", a:"sportive", t:"Согласование прилагательных"},
+
+    {s:"Mon père et ma mère sont issus du patriciat, de la haute et vieille ___ romaine.", w:"NOBLE", a:"noblesse", t:"Существительные от прилагательных"},
+    {s:"Je reçois malgré tout une excellente ___.", w:"ÉDUQUER", a:"éducation", t:"Отглагольные существительные"},
+    {s:"Rome est une République dont le ___ est assuré par des magistrats.", w:"GOUVERNER", a:"gouvernement", t:"Отглагольные существительные"},
+    {s:"Je leur fais profiter ___ de mon pouvoir.", w:"LARGE", a:"largement", t:"Наречия от прилагательных"},
+    {s:"Je peux compter sur leur ___.", w:"FIDÈLE", a:"fidélité", t:"Существительные от прилагательных"},
+    {s:"Le potentiel d'Internet et ses ___ sont infinis.", w:"POSSIBLE", a:"possibilités", t:"Существительные от прилагательных, мн.ч."},
+    {s:"C'est aussi un outil dangereux qui peut se retourner contre ses ___.", w:"UTILISER", a:"utilisateurs", t:"Отглагольные существительные (деятель), мн.ч."},
+    {s:"Il faut éviter de leur donner des ___ personnelles.", w:"INFORMER", a:"informations", t:"Отглагольные существительные, мн.ч."},
+    {s:"Les propositions de ces personnes peuvent sembler ___, mais il faut s'en méfier.", w:"MAGIE", a:"magiques", t:"Образование прилагательных от существительных"},
+    {s:"L'___ des contacts sur Internet mène parfois à des tragédies.", w:"ÉTABLIR", a:"établissement", t:"Отглагольные существительные"},
+
+    {s:"Si quelqu'un cherche à faire du mal sur Internet, c'est ___ comme dans la réalité.", w:"EXACT", a:"exactement", t:"Наречия от прилагательных"},
+    {s:"C'est l'une des plus importantes fêtes de Russie. C'est une fête ___.", w:"TRADITIONNEL", a:"traditionnelle", t:"Согласование прилагательных"},
+    {s:"Pendant cette semaine, on ___ des crêpes, symboles du soleil.", w:"FAIRE", a:"fait", t:"Спряжение faire, настоящее время"},
+    {s:"On organise des tournois. Les participants reçoivent des ___.", w:"CADEAU", a:"cadeaux", t:"Множественное число существительных"},
+    {s:"Petit, il jouait au football dans la rue avec ___ copains.", w:"SON", a:"ses", t:"Притяжательные прилагательные"},
+    {s:"Depuis, il a participé à ___ championnats.", w:"DIFFÉRENT", a:"différents", t:"Согласование прилагательных, мн.ч."},
+    {s:"Il ___ 2 des 3 buts du match.", w:"MARQUER", a:"a marqué", t:"Passé composé"},
+    {s:"Deux ___ plus tard, l'équipe de France a remporté la Coupe d'Europe face à l'Italie.", w:"AN", a:"ans", t:"Множественное число существительных"},
+    {s:"Il attire chaque année 6 millions de ___.", w:"VISITER", a:"visiteurs", t:"Отглагольные существительные (деятель), мн.ч."},
+    {s:"Sur son arène on donnait ___ les combats de gladiateurs.", w:"GRATUIT", a:"gratuitement", t:"Наречия от прилагательных"},
+
+    {s:"La partie la plus ___ est le clocher d'Ivan le Grand.", w:"ANCIEN", a:"ancienne", t:"Согласование прилагательных (превосходная степень)"},
+    {s:"Il a été élevé à la hauteur ___ de 81 mètres.", w:"ACTUEL", a:"actuelle", t:"Согласование прилагательных"},
+    {s:"Elle abrite une exposition ___ sur l'histoire du Kremlin.", w:"INTÉRESSANT", a:"intéressante", t:"Согласование прилагательных"},
+    {s:"La mairie ___ les habitants \"à éviter le secteur\", le temps de confirmer l'information.", w:"INVITER", a:"a invité", t:"Passé composé"},
+    {s:"Les ___ des pompiers se sont jetés à l'eau.", w:"PLONGEUR", a:"plongeurs", t:"Множественное число существительных"},
+    {s:"L'animal ne ___ pas: les pompiers pensaient qu'il était mort.", w:"BOUGER", a:"bougeait", t:"Имперфект (повествование в прошлом)"},
+    {s:"L'Union nationale des associations de l'outil en main regroupe ___ 70 associations.", w:"ACTUEL", a:"actuellement", t:"Наречия от прилагательных"},
+    {s:"Des gens de métier bénévoles, le plus souvent ___, s'y rencontrent chaque mercredi.", w:"RETRAITE", a:"retraités", t:"Согласование прилагательных, мн.ч."},
+    {s:"Les ateliers peuvent avoir lieu chez l'artisan, dans un établissement d'___.", w:"ENSEIGNER", a:"enseignement", t:"Отглагольные существительные"},
+    {s:"Les enfants reçoivent la ___ dans un cadre privilégié.", w:"FORMER", a:"formation", t:"Отглагольные существительные"},
+
+    {s:"Il a compris qu'il n'avait pas besoin de représenter des choses pour que ses tableaux soient ___.", w:"MAGNIFIQUE", a:"magnifiques", t:"Согласование прилагательных, мн.ч."},
+    {s:"On prend plaisir à la découverte des ___ de la Tretyakov et de la nouvelle Tretyakov.", w:"MUSÉE", a:"musées", t:"Множественное число существительных"},
+    {s:"On ___ aussi se promener dans le célèbre parc Gorki qui longe la Moskova.", w:"POUVOIR", a:"peut", t:"Спряжение pouvoir, настоящее время"},
+    {s:"___ rivière a donné son nom à la ville.", w:"CE", a:"cette", t:"Указательные прилагательные"},
+    {s:"84% des jeunes de 11-24 ans ___ d'un mobile!", w:"ÉQUIPER", a:"sont équipés", t:"Пассивный залог, согласование мн.ч."},
+    {s:"Plusieurs d'entre eux ___ plus de 100 messages par semaine.", w:"ENVOYER", a:"envoient", t:"Спряжение envoyer, настоящее время"},
+    {s:"C'est certainement la ___ raison qui motive la passion des jeunes.", w:"PRINCIPAL", a:"principale", t:"Согласование прилагательных"},
+    {s:"En 2013 le Gouvernement ___ son interdiction dans les écoles françaises.", w:"PROPOSER", a:"a proposé", t:"Passé composé"},
+    {s:"Son succès est lié aux compagnies de danse et d'opéra figurant parmi les plus ___ et les plus renommées au monde.", w:"ANCIEN", a:"anciennes", t:"Согласование прилагательных, мн.ч."},
+    {s:"Elle se distingue par le symbole de la couronne ___.", w:"IMPÉRIAL", a:"impériale", t:"Согласование прилагательных"},
+
+    {s:"Le loup va et ___. Il marche de long en large et ne s'arrête jamais.", w:"VENIR", a:"vient", t:"Спряжение venir, настоящее время"},
+    {s:"Le garçon reste immobile, comme un arbre gelé, à regarder le loup ___.", w:"MARCHER", a:"marcher", t:"Инфинитив после глагола восприятия (regarder + inf.)"},
+    {s:"Les autres enfants courent, sautent, ___, pleurent.", w:"CRIER", a:"crient", t:"Спряжение глаголов на -ier, настоящее время"},
+    {s:"C'était un ___ investissement.", w:"BON", a:"bon", t:"Прилагательные (базовая форма)"},
+    {s:"Beaucoup ont construit de ___ villas somptueuses au bord de la mer.", w:"GRAND", a:"grandes", t:"Согласование прилагательных, мн.ч. ж.р."},
+    {s:"N'importe qui peut y venir et ___ plages attirent des gens du monde entier.", w:"SON", a:"ses", t:"Притяжательные прилагательные"},
+    {s:"Pour ___ qui ne veulent pas seulement être allongés à la plage.", w:"CELUI", a:"ceux", t:"Указательные местоимения, мн.ч."},
+    {s:"Si on y ajoute ses quartiers ___, elle occupe 1439 km².", w:"PÉRIPHÉRIE", a:"périphériques", t:"Образование прилагательных от существительных"},
+    {s:"La ville est sur le ___ des voies aériennes qui relient l'Extrême-Orient.", w:"PASSER", a:"passage", t:"Отглагольные существительные"},
+    {s:"Saint-Pétersbourg est sous l'___ d'un climat marin.", w:"INFLUER", a:"influence", t:"Отглагольные существительные"}
+  ];
+
+  TASKS.forEach(function(t, i){ t.id = i; });
+
+  // ---------- Состояние ----------
+  var queue = [];
+  var current = null;
+  var totalAnswered = 0;
+  var correctFirstTry = 0;
+  var mistakesByTheme = {};   // theme -> count
+  var answeredIds = {};       // чтобы не пушить дубли исходного задания в очередь бесконечно
+  var awaitingNext = false;
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function normalize(str){
+    return str
+      .trim()
+      .toLowerCase()
+      .replace(/['’ʼ]/g, "'")
+      .replace(/\s+/g, ' ');
+  }
+
+  function byTheme(theme, excludeId){
+    return TASKS.filter(function(t){ return t.t === theme && t.id !== excludeId; });
+  }
+
+  function startSession(pool){
+    queue = shuffle(pool);
+    totalAnswered = 0;
+    correctFirstTry = 0;
+    mistakesByTheme = {};
+    document.getElementById('summaryArea').style.display = 'none';
+    document.getElementById('quizArea').style.display = 'block';
+    nextQuestion();
+  }
+
+  function totalPlanned(){
+    return totalAnswered + queue.length + (current ? 1 : 0);
+  }
+
+  function updateStats(){
+    document.getElementById('statsLine').textContent =
+      totalAnswered + ' / ' + totalPlanned() + ' · верно ' + correctFirstTry;
+    var pct = totalPlanned() > 0 ? Math.round((totalAnswered / totalPlanned()) * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  function nextQuestion(){
+    awaitingNext = false;
+    document.getElementById('feedback').className = 'feedback';
+    document.getElementById('feedback').innerHTML = '';
+    document.getElementById('nextRow').className = 'next-row';
+    document.getElementById('answerForm').style.display = 'flex';
+
+    if (queue.length === 0){
+      finishSession();
+      return;
+    }
+    current = queue.shift();
+    document.getElementById('themeTag').textContent = current.t;
+    document.getElementById('sentenceText').innerHTML = current.s.replace('___', '<span class="blank">&nbsp;</span>');
+    document.getElementById('givenWord').textContent = current.w;
+    var input = document.getElementById('answerInput');
+    input.value = '';
+    updateStats();
+    setTimeout(function(){ input.focus({preventScroll:true}); }, 50);
+  }
+
+  function finishSession(){
+    current = null;
+    document.getElementById('quizArea').style.display = 'none';
+    var summary = document.getElementById('summaryArea');
+    summary.style.display = 'block';
+    document.getElementById('scoreText').textContent = correctFirstTry + ' / ' + totalAnswered;
+
+    var themes = Object.keys(mistakesByTheme).sort(function(a,b){
+      return mistakesByTheme[b] - mistakesByTheme[a];
+    });
+    var weakDiv = document.getElementById('weakThemes');
+    if (themes.length === 0){
+      weakDiv.innerHTML = '<p>Ни одной ошибки — отличный результат!</p>';
+    } else {
+      var html = '<p>Темы, где были ошибки:</p><ul>';
+      themes.forEach(function(th){
+        html += '<li>' + th + ' — ошибок: ' + mistakesByTheme[th] + '</li>';
+      });
+      html += '</ul>';
+      weakDiv.innerHTML = html;
+    }
+
+    window._lastWeakThemes = themes;
+    updateStats();
+  }
+
+  function submitAnswer(){
+    if (!current || awaitingNext) return;
+    var input = document.getElementById('answerInput');
+    var val = normalize(input.value);
+    var correct = normalize(current.a);
+    var fb = document.getElementById('feedback');
+    totalAnswered++;
+
+    if (val.length > 0 && val === correct){
+      correctFirstTry++;
+      fb.className = 'feedback correct show';
+      fb.innerHTML = 'Верно — <strong>' + current.a + '</strong>.';
+    } else {
+      mistakesByTheme[current.t] = (mistakesByTheme[current.t] || 0) + 1;
+      fb.className = 'feedback wrong show';
+      fb.innerHTML = 'Правильный ответ: <strong>' + current.a + '</strong>.' +
+        '<span class="margin-note">Тема «' + current.t + '» — добавляю ещё задания на отработку.</span>';
+
+      var extra = shuffle(byTheme(current.t, current.id)).slice(0, 2);
+      // если по теме почти нет других заданий — добавим само задание ещё раз позже
+      if (extra.length === 0){
+        extra = [current];
+      }
+      // вставляем не сразу следующим, а через одно, чтобы не зубрить в лоб
+      var insertAt = Math.min(1, queue.length);
+      queue.splice.apply(queue, [insertAt, 0].concat(extra));
+    }
+
+    document.getElementById('answerForm').style.display = 'none';
+    document.getElementById('nextRow').className = 'next-row show';
+    awaitingNext = true;
+    updateStats();
+    setTimeout(function(){ document.getElementById('nextBtn').focus({preventScroll:true}); }, 30);
+  }
+
+  document.getElementById('answerForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    submitAnswer();
+  });
+
+  document.getElementById('nextBtn').addEventListener('click', function(){
+    nextQuestion();
+  });
+
+  document.getElementById('restartAllBtn').addEventListener('click', function(){
+    startSession(TASKS);
+  });
+
+  document.getElementById('restartWeakBtn').addEventListener('click', function(){
+    var themes = window._lastWeakThemes || [];
+    if (themes.length === 0){
+      startSession(TASKS);
+      return;
+    }
+    var pool = TASKS.filter(function(t){ return themes.indexOf(t.t) !== -1; });
+    startSession(pool);
+  });
+
+  // старт
+  startSession(TASKS);
+
+})();
+</script>
+</body>
+</html>
