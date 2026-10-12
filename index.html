@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Cahier de français — тренажёр ЕГЭ</title>
+<style>
+  :root{
+    color-scheme: light;
+    --paper: #fbfbfa;
+    --paper-line: #e6e8ee;
+    --ink: #10173a;
+    --ink-soft: #4a5578;
+    --navy: #17275c;
+    --navy-soft: #2c3d7a;
+    --red: #b3272d;
+    --red-soft: #e2a2a0;
+    --green: #2f6b46;
+    --card-shadow: 0 18px 40px rgba(16,23,58,0.10);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html {
+    background: var(--paper);
+    color-scheme: light;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    min-height: 100%;
+  }
+
+  body {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 37px,
+      var(--paper-line) 38px
+    );
+    padding: 0 16px 64px;
+  }
+
+  .flag-bar {
+    height: 5px;
+    margin: 0 -16px 24px;
+    background: linear-gradient(
+      to right,
+      var(--navy) 0%, var(--navy) 33.33%,
+      #ffffff 33.33%, #ffffff 66.66%,
+      var(--red) 66.66%, var(--red) 100%
+    );
+  }
+
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  header.top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-top: 18px;
+    flex-wrap: wrap;
+  }
+
+  header.top h1 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 0.01em;
+    color: var(--navy);
+  }
+
+  header.top .stats {
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+
+  .sheet {
+    position: relative;
+    background: #ffffff;
+    border-radius: 4px;
+    box-shadow: var(--card-shadow);
+    padding: 28px 22px 26px 34px;
+    border: 1px solid #e3e6f0;
+    overflow: hidden;
+  }
+
+  .sheet::before {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--red-soft);
+    opacity: 0.55;
+  }
+
+  .progressbar {
+    height: 6px;
+    background: var(--paper-line);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 22px;
+  }
+  .progressbar > div {
+    height: 100%;
+    background: var(--navy-soft);
+    width: 0%;
+    transition: width 0.35s ease;
+  }
+
+  .theme-tag {
+    display: inline-block;
+    font-size: 0.78rem;
+    color: var(--navy-soft);
+    border: 1px solid var(--paper-line);
+    border-radius: 999px;
+    padding: 3px 12px;
+    margin-bottom: 16px;
+    background: #f2f4fb;
+  }
+
+  .sentence {
+    font-size: 1.28rem;
+    line-height: 1.65;
+    margin-bottom: 6px;
+  }
+
+  .blank {
+    display: inline-block;
+    min-width: 90px;
+    border-bottom: 2px solid var(--ink);
+    text-align: center;
+    padding: 0 4px;
+  }
+
+  .given-word {
+    display: inline-block;
+    margin-top: 4px;
+    margin-bottom: 20px;
+    border: 1.5px solid var(--ink);
+    border-radius: 3px;
+    padding: 4px 12px;
+    font-variant: small-caps;
+    letter-spacing: 0.03em;
+    font-size: 1.05rem;
+    background: #f2f4fb;
+  }
+
+  form.answer-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+  }
+
+  input[type="text"] {
+    flex: 1 1 200px;
+    font-size: 17px;
+    font-family: inherit;
+    color: var(--ink);
+    padding: 12px 14px;
+    min-height: 44px;
+    border: 2px solid var(--navy);
+    border-radius: 6px;
+    background: #ffffff;
+    -webkit-text-fill-color: var(--ink);
+  }
+  input[type="text"]:focus {
+    outline: 3px solid var(--navy-soft);
+    outline-offset: 1px;
+  }
+  input[type="text"]::placeholder {
+    color: #8a90a8;
+  }
+
+  button {
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  button.primary {
+    background: var(--navy);
+    color: #ffffff;
+  }
+  button.primary:active { background: #0c1740; }
+
+  button.secondary {
+    background: transparent;
+    color: var(--navy);
+    border: 2px solid var(--navy);
+  }
+  button.secondary:active { background: #eef1fa; }
+
+  select.theme-select {
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: #ffffff;
+    border: 2px solid var(--navy);
+    border-radius: 6px;
+    padding: 9px 10px;
+    min-height: 44px;
+  }
+
+  .feedback {
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: 6px;
+    font-size: 1.02rem;
+    line-height: 1.55;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct {
+    background: #eaf3ec;
+    border: 1.5px solid var(--green);
+    color: #294f34;
+  }
+  .feedback.wrong {
+    background: #f8ecea;
+    border: 1.5px solid var(--red);
+    color: var(--red);
+  }
+  .feedback .margin-note {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+
+  .next-row {
+    margin-top: 18px;
+    display: none;
+  }
+  .next-row.show { display: block; }
+
+  .summary h2 {
+    font-size: 1.25rem;
+    margin-top: 0;
+  }
+  .summary ul {
+    padding-left: 20px;
+    margin: 12px 0 22px;
+  }
+  .summary li {
+    margin-bottom: 6px;
+  }
+  .summary .score {
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 4px 0 2px;
+  }
+  .summary .score-label {
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+  }
+
+  .button-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .setup-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .setup-row label {
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+  }
+
+  footer.hint {
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    margin-top: 20px;
+  }
+
+  @media (max-width: 420px) {
+    .sentence { font-size: 1.15rem; }
+    .sheet { padding: 22px 16px 22px 26px; }
+  }
+</style>
+</head>
+<body>
+<div class="flag-bar"></div>
+<div class="wrap">
+  <header class="top">
+    <h1>Cahier de français</h1>
+    <div class="stats" id="statsLine">0 / 0 · верно 0</div>
+  </header>
+
+  <div class="sheet">
+    <div class="setup-row" id="setupRow">
+      <label for="themeFilter">Тема:</label>
+      <select class="theme-select" id="themeFilter">
+        <option value="">Все темы (354 задания)</option>
+      </select>
+    </div>
+
+    <div class="progressbar"><div id="progressFill"></div></div>
+
+    <div id="quizArea">
+      <div class="theme-tag" id="themeTag"></div>
+      <div class="sentence" id="sentenceText"></div>
+      <div class="given-word" id="givenWord"></div>
+
+      <form class="answer-row" id="answerForm">
+        <input type="text" id="answerInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Впишите форму слова">
+        <button type="submit" class="primary" id="submitBtn">Ответить</button>
+      </form>
+
+      <div class="feedback" id="feedback"></div>
+
+      <div class="next-row" id="nextRow">
+        <button type="button" class="primary" id="nextBtn">Далее</button>
+      </div>
+    </div>
+
+    <div class="summary" id="summaryArea" style="display:none;">
+      <h2>Занятие завершено</h2>
+      <div class="score" id="scoreText">0 / 0</div>
+      <div class="score-label">правильных ответов с первой попытки</div>
+      <div id="weakThemes"></div>
+      <div class="button-row">
+        <button type="button" class="primary" id="restartAllBtn">Начать заново (все задания)</button>
+        <button type="button" class="secondary" id="restartWeakBtn">Повторить только слабые темы</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="hint">При ошибке правильный ответ показывается сразу, а дальше добавляется ещё пара заданий на ту же тему. Можно выбрать одну тему для отработки — в выпадающем списке сверху.</footer>
+</div>
+
+<script>
+(function(){
+
+  // ---------- Данные ----------
+  var TASKS = [
+    {s:"Climat ___ doux.", w:"RELATIF", a:"relativement", t:"Наречия на -ment"},
+    {s:"D'___.", w:"AMÉNAGER", a:"aménagement", t:"Отглагольные существительные"},
+    {s:"Climat ___.", w:"CONTINENT", a:"continental", t:"Словообразование (другие части речи)"},
+    {s:"On est ___ englué.", w:"TELLE", a:"tellement", t:"Наречия на -ment"},
+    {s:"À l'___.", w:"ORGANISER", a:"organisation", t:"Отглагольные существительные"},
+    {s:"Les ___ qui ne tentent pas.", w:"PROPOSER", a:"propositions", t:"Отглагольные существительные"},
+    {s:"Sur ton ___.", w:"ENTOURER", a:"entourage", t:"Отглагольные существительные"},
+    {s:"Une autre ___.", w:"ACTIVE", a:"activité", t:"Словообразование (другие части речи)"},
+    {s:"Événement ___.", w:"MONDE", a:"mondial", t:"Словообразование (другие части речи)"},
+    {s:"Des ___ et des acteurs.", w:"RÉALISER", a:"réalisateurs", t:"Отглагольные существительные"},
+    {s:"Capitale ___.", w:"CULTUREL", a:"culturelle", t:"Согласование прилагательных"},
+    {s:"Sortes de ___.", w:"FÊTE", a:"fêtes", t:"Множественное число существительных"},
+    {s:"Cette ___ ville.", w:"BEAU", a:"belle", t:"Согласование прилагательных"},
+    {s:"Lui ___ des histoires.", w:"RACONTER", a:"racontait", t:"Имперфект"},
+    {s:"Il ___ trop de noir.", w:"METTRE", a:"mettait", t:"Имперфект"},
+    {s:"Des ___ et personnages.", w:"CHEVAL", a:"chevaux", t:"Множественное число существительных"},
+    {s:"En fait ___ partie.", w:"ÉGALE", a:"également", t:"Наречия на -ment"},
+    {s:"Sont ___ dans leurs tenues.", w:"ADMIRER", a:"admirés", t:"Пассивный залог"},
+    {s:"Nombreux ___.", w:"JOURNAL", a:"journaux", t:"Множественное число существительных"},
+    {s:"Le ___ des films.", w:"CLASSER", a:"classement", t:"Отглагольные существительные"},
+    {s:"Tableaux soient ___.", w:"MAGNIFIQUE", a:"magnifiques", t:"Согласование прилагательных"},
+    {s:"Des ___ de la Tretyakov.", w:"MUSÉE", a:"musées", t:"Множественное число существительных"},
+    {s:"On ___ se promener.", w:"POUVOIR", a:"peut", t:"Спряжение в présent"},
+    {s:"___ rivière a donné.", w:"CE", a:"cette", t:"Местоимения и детерминативы"},
+    {s:"Ans ___ d'un mobile.", w:"ÉQUIPER", a:"sont équipés", t:"Пассивный залог"},
+    {s:"___ plus de 100 messages.", w:"ENVOYER", a:"envoient", t:"Спряжение в présent"},
+    {s:"La ___ raison.", w:"PRINCIPAL", a:"principale", t:"Согласование прилагательных"},
+    {s:"Gouvernement ___ interdiction.", w:"PROPOSER", a:"a proposé", t:"Passé composé"},
+    {s:"Les plus ___.", w:"ANCIEN", a:"anciennes", t:"Согласование прилагательных"},
+    {s:"Couronne ___.", w:"IMPÉRIAL", a:"impériale", t:"Согласование прилагательных"},
+    {s:"Salle ___.", w:"MERVEILLEUX", a:"merveilleuse", t:"Согласование прилагательных"},
+    {s:"Les ___ ont appelé.", w:"HABITANT", a:"habitants", t:"Множественное число существительных"},
+    {s:"Lui ___ la vie.", w:"SAUVER", a:"a sauvé", t:"Passé composé"},
+    {s:"N'___ pas de nom.", w:"AVOIR", a:"avait", t:"Имперфект"},
+    {s:"Ne pas pratiquer l'___.", w:"ÉCRIRE", a:"l'écriture", t:"Отглагольные существительные"},
+    {s:"Les ___ d'élite.", w:"GUERRE", a:"guerriers", t:"Словообразование (другие части речи)"},
+    {s:"Les ___ du tonneau.", w:"INVENTER", a:"inventeurs", t:"Отглагольные существительные"},
+    {s:"L'emportent ___.", w:"FINALE", a:"finalement", t:"Наречия на -ment"},
+    {s:"L'___ de fonctionnaires.", w:"INSTALLER", a:"installation", t:"Отглагольные существительные"},
+    {s:"De nouveaux ___.", w:"BÂTIR", a:"bâtiments", t:"Отглагольные существительные"},
+    {s:"Partie la plus ___.", w:"ANCIEN", a:"ancienne", t:"Согласование прилагательных"},
+    {s:"Hauteur ___.", w:"ACTUEL", a:"actuelle", t:"Согласование прилагательных"},
+    {s:"Exposition ___.", w:"INTÉRESSANT", a:"intéressante", t:"Согласование прилагательных"},
+    {s:"Mairie ___ les habitants.", w:"INVITER", a:"a invité", t:"Passé composé"},
+    {s:"Les ___ des pompiers.", w:"PLONGEUR", a:"plongeurs", t:"Множественное число существительных"},
+    {s:"Ne ___ pas.", w:"BOUGER", a:"bougeait", t:"Имперфект"},
+    {s:"Regroupe ___ 70 assoc.", w:"ACTUEL", a:"actuellement", t:"Наречия на -ment"},
+    {s:"Le plus souvent ___.", w:"RETRAITE", a:"retraités", t:"Согласование прилагательных"},
+    {s:"Établissement d'___.", w:"ENSEIGNER", a:"enseignement", t:"Отглагольные существительные"},
+    {s:"Reçoivent la ___.", w:"FORMER", a:"formation", t:"Отглагольные существительные"},
+    {s:"Cet ___ de rêve.", w:"ENVIRONNER", a:"environnement", t:"Отглагольные существительные"},
+    {s:"De ___ des professions.", w:"COUVRIR", a:"découvrir", t:"Инфинитив после предлога"},
+    {s:"Qui ___ visiter Nice.", w:"VOULOIR", a:"voulaient", t:"Имперфект"},
+    {s:"Casino qui ___.", w:"SE TROUVER", a:"se trouvait", t:"Имперфект"},
+    {s:"Les ___ de hasard.", w:"JEU", a:"jeux", t:"Множественное число существительных"},
+    {s:"Se poser ___ ces questions.", w:"TOUT", a:"toutes", t:"Местоимения и детерминативы"},
+    {s:"Pour les ___.", w:"ENFANT", a:"enfants", t:"Множественное число существительных"},
+    {s:"Qui ___ jette sa viande.", w:"IL", a:"lui", t:"Местоимения и детерминативы"},
+    {s:"Tu ___ l'affaire.", w:"AVOIR", a:"as", t:"Спряжение в présent"},
+    {s:"Association ___.", w:"SPORT", a:"sportive", t:"Согласование прилагательных"},
+    {s:"Vieille ___ romaine.", w:"NOBLE", a:"noblesse", t:"Словообразование (другие части речи)"},
+    {s:"Excellente ___.", w:"ÉDUQUER", a:"éducation", t:"Отглагольные существительные"},
+    {s:"Le ___ assuré par magistrats.", w:"GOUVERNER", a:"gouvernement", t:"Отглагольные существительные"},
+    {s:"Profiter ___.", w:"LARGE", a:"largement", t:"Наречия на -ment"},
+    {s:"Leur ___.", w:"FIDÈLE", a:"fidélité", t:"Словообразование (другие части речи)"},
+    {s:"Ses ___.", w:"POSSIBLE", a:"possibilités", t:"Словообразование (другие части речи)"},
+    {s:"Contre ses ___.", w:"UTILISER", a:"utilisateurs", t:"Отглагольные существительные"},
+    {s:"Des ___ personnelles.", w:"INFORMER", a:"informations", t:"Отглагольные существительные"},
+    {s:"Sembler ___.", w:"MAGIE", a:"magiques", t:"Словообразование (другие части речи)"},
+    {s:"L'___ des contacts.", w:"ÉTABLIR", a:"établissement", t:"Отглагольные существительные"},
+    {s:"Alternative ___.", w:"INTÉRESSANT", a:"intéressante", t:"Согласование прилагательных"},
+    {s:"Très ___ programmation.", w:"BEAU", a:"belle", t:"Согласование прилагательных"},
+    {s:"Ses ___ maisons.", w:"ANCIEN", a:"anciennes", t:"Согласование прилагательных"},
+    {s:"Elle ___ sur l'Etna.", w:"MONTER", a:"montait", t:"Имперфект"},
+    {s:"Le guide ___ mes parents.", w:"RASSURER", a:"a rassuré", t:"Passé composé"},
+    {s:"Atteints par des ___.", w:"PIERRE", a:"pierres", t:"Множественное число существительных"},
+    {s:"Tu auras ___ faim.", w:"CERTAINE", a:"certainement", t:"Наречия на -ment"},
+    {s:"Les ___ que tu mettras.", w:"VÊTIR", a:"vêtements", t:"Отглагольные существительные"},
+    {s:"Sera à ta ___.", w:"DISPOSER", a:"disposition", t:"Отглагольные существительные"},
+    {s:"Psychologue de l'Éducation ___.", w:"NATION", a:"nationale", t:"Словообразование (другие части речи)"},
+    {s:"C'est ___ comme dans la réalité.", w:"EXACT", a:"exactement", t:"Наречия на -ment"},
+    {s:"Fête ___.", w:"TRADITIONNEL", a:"traditionnelle", t:"Согласование прилагательных"},
+    {s:"On ___ des crêpes.", w:"FAIRE", a:"fait", t:"Спряжение в présent"},
+    {s:"Reçoivent des ___.", w:"CADEAU", a:"cadeaux", t:"Множественное число существительных"},
+    {s:"Avec ___ copains.", w:"SON", a:"ses", t:"Местоимения и детерминативы"},
+    {s:"À ___ championnats.", w:"DIFFÉRENT", a:"différents", t:"Согласование прилагательных"},
+    {s:"Il ___ 2 des 3 buts.", w:"MARQUER", a:"a marqué", t:"Passé composé"},
+    {s:"Deux ___ plus tard.", w:"AN", a:"ans", t:"Множественное число существительных"},
+    {s:"6 millions de ___.", w:"VISITER", a:"visiteurs", t:"Отглагольные существительные"},
+    {s:"Donnait ___ les combats.", w:"GRATUIT", a:"gratuitement", t:"Наречия на -ment"},
+    {s:"Chaîne ___ beaucoup d'activités.", w:"OFFRIR", a:"offre", t:"Спряжение в présent"},
+    {s:"Gonfle les ___.", w:"RIVIÈRE", a:"rivières", t:"Множественное число существительных"},
+    {s:"Les ___ villes.", w:"PRINCIPAL", a:"principales", t:"Согласование прилагательных"},
+    {s:"Réunit ___ les ans.", w:"TOUT", a:"tous", t:"Местоимения и детерминативы"},
+    {s:"Festival ___ lieu.", w:"AVOIR", a:"a eu", t:"Passé composé"},
+    {s:"Des cours ___.", w:"DIFFÉRENT", a:"différents", t:"Согласование прилагательных"},
+    {s:"Des ___ ménagers.", w:"TRAVAIL", a:"travaux", t:"Множественное число существительных"},
+    {s:"Il ___ célèbre.", w:"DEVENIR", a:"deviendra", t:"Futur simple"},
+    {s:"Une ___ difficile.", w:"JEUNE", a:"jeunesse", t:"Словообразование (другие части речи)"},
+    {s:"L'___ de Tamerlan.", w:"ÉDUQUER", a:"éducation", t:"Отглагольные существительные"},
+    {s:"Ton club ou ton ___.", w:"ASSOCIER", a:"association", t:"Отглагольные существительные"},
+    {s:"Pour éviter les ___.", w:"BLESSER", a:"blessures", t:"Отглагольные существительные"},
+    {s:"Prendre ___ en soi.", w:"CONFIER", a:"confiance", t:"Отглагольные существительные"},
+    {s:"Pour la ___ des animaux.", w:"RECONNAÎTRE", a:"reconnaissance", t:"Отглагольные существительные"},
+    {s:"Tentent de ___.", w:"FORMER", a:"former", t:"Инфинитив после предлога"},
+    {s:"Sont ___ formulées.", w:"ÉGAL", a:"également", t:"Наречия на -ment"},
+    {s:"Conditions de ___ en cage.", w:"TRANSPORTER", a:"transport", t:"Отглагольные существительные"},
+    {s:"Tout ___ comparable.", w:"SIMPLE", a:"simplement", t:"Наречия на -ment"},
+    {s:"L'___ animale.", w:"EXPLOITER", a:"exploitation", t:"Отглагольные существительные"},
+    {s:"Une ___ à travers l'histoire.", w:"PROMENER", a:"promenade", t:"Отглагольные существительные"},
+    {s:"Elle ___ dans les années 1130.", w:"ARRIVER", a:"est arrivée", t:"Passé composé"},
+    {s:"Valeurs ___.", w:"ARTISTE", a:"artistiques", t:"Словообразование (другие части речи)"},
+    {s:"Patrimoine ___.", w:"MONDE", a:"mondial", t:"Словообразование (другие части речи)"},
+    {s:"Aux ___ de tous âges.", w:"VISITE", a:"visiteurs", t:"Отглагольные существительные"},
+    {s:"Proposées ___ ceux.", w:"ÉGAL", a:"également", t:"Наречия на -ment"},
+    {s:"La plus ___ icône.", w:"BEAU", a:"belle", t:"Согласование прилагательных"},
+    {s:"Les ___ qui la portaient.", w:"CHEVAL", a:"chevaux", t:"Множественное число существительных"},
+    {s:"Ils se ___ dans des aventures.", w:"JETER", a:"jettent", t:"Спряжение в présent"},
+    {s:"Ron est le ___.", w:"BON", a:"meilleur", t:"Согласование прилагательных"},
+    {s:"Famille ___ de sorciers.", w:"NOMBREUX", a:"nombreuse", t:"Согласование прилагательных"},
+    {s:"Montrer sa ___.", w:"RICHE", a:"richesse", t:"Словообразование (другие части речи)"},
+    {s:"Les ___ des chambres.", w:"ÉQUIPER", a:"équipements", t:"Отглагольные существительные"},
+    {s:"De la ___ et du vin.", w:"NOURRIR", a:"nourriture", t:"Отглагольные существительные"},
+    {s:"Prendre ___.", w:"FROID", a:"froid", t:"Словообразование (другие части речи)"},
+    {s:"Votre ___ change.", w:"RESPIRER", a:"respiration", t:"Отглагольные существительные"},
+    {s:"Promesse d'une ___ lumière.", w:"BEAUTÉ", a:"belle", t:"Словообразование (другие части речи)"},
+    {s:"Expérience ___ à vivre.", w:"INTÉRÊT", a:"intéressante", t:"Словообразование (другие части речи)"},
+    {s:"Abriter ses ___.", w:"RICHE", a:"richesses", t:"Множественное число существительных"},
+    {s:"Splendides ___.", w:"BÂTIR", a:"bâtiments", t:"Отглагольные существительные"},
+    {s:"Grands ___ italiens.", w:"ART", a:"artistes", t:"Отглагольные существительные"},
+    {s:"Tableau ___ connu.", w:"MONDIALE", a:"mondialement", t:"Наречия на -ment"},
+    {s:"Père ___ chez grand-parents.", w:"VENIR", a:"est venu", t:"Passé composé"},
+    {s:"45 000 ___.", w:"HABITANT", a:"habitants", t:"Множественное число существительных"},
+    {s:"La plus ___ du sud.", w:"IMPORTANT", a:"importante", t:"Согласование прилагательных"},
+    {s:"Bayonne est ___.", w:"SITUER", a:"située", t:"Пассивный залог"},
+    {s:"Patrimoine ___ séculaire.", w:"MONUMENTAL", a:"monumental", t:"Согласование прилагательных"},
+    {s:"N'___ plus à démarrer.", w:"ARRIVER", a:"arrivaient", t:"Имперфект"},
+    {s:"Monte ___ au-dessus de zéro.", w:"RARE", a:"rarement", t:"Наречия на -ment"},
+    {s:"Un ___ minimal de survie.", w:"ÉQUIPER", a:"équipement", t:"Отглагольные существительные"},
+    {s:"Le ___ du Moyen Âge.", w:"PASSER", a:"passage", t:"Отглагольные существительные"},
+    {s:"Toutes les ___.", w:"DÉCIDER", a:"décisions", t:"Отглагольные существительные"},
+    {s:"Timide, ___.", w:"STUDIEUX", a:"studieuse", t:"Согласование прилагательных"},
+    {s:"Il ___ des histoires drôles.", w:"CONNAÎTRE", a:"connaissait", t:"Имперфект"},
+    {s:"La plus ___ ville de Sibérie.", w:"ANCIEN", a:"ancienne", t:"Согласование прилагательных"},
+    {s:"Étés ___ et pluvieux.", w:"CHAUD", a:"chauds", t:"Согласование прилагательных"},
+    {s:"Centres ___.", w:"COMMERCIAL", a:"commerciaux", t:"Множественное число существительных"},
+    {s:"Ils ___ en panne.", w:"TOMBER", a:"sont tombés", t:"Passé composé"},
+    {s:"Rois enterrés sous des ___.", w:"SCULPTER", a:"sculptures", t:"Отглагольные существительные"},
+    {s:"Étaient ___ peintes.", w:"ENTIÈRE", a:"entièrement", t:"Наречия на -ment"},
+    {s:"Chien représente la ___.", w:"FIDÈLE", a:"fidélité", t:"Словообразование (другие части речи)"},
+    {s:"Ses ___ cultures.", w:"NOMBREUX", a:"nombreuses", t:"Согласование прилагательных"},
+    {s:"Et ___ d'accéder.", w:"PERMETTRE", a:"permet", t:"Спряжение в présent"},
+    {s:"Habitants ___.", w:"LOCAL", a:"locaux", t:"Множественное число существительных"},
+    {s:"Petit, il ___ dessiner.", w:"ADORER", a:"adorait", t:"Имперфект"},
+    {s:"Il ___ Claude.", w:"ÉPOUSER", a:"a épousé", t:"Passé composé"},
+    {s:"Les ___ qui l'inspirent.", w:"ANIMAL", a:"animaux", t:"Множественное число существительных"},
+    {s:"La ___ capitale.", w:"NOUVEAU", a:"nouvelle", t:"Согласование прилагательных"},
+    {s:"___ à devenir artiste.", w:"RÉUSSIR", a:"a réussi", t:"Passé composé"},
+    {s:"Fonde des ___.", w:"HÔPITAL", a:"hôpitaux", t:"Множественное число существительных"},
+    {s:"Un des ___ architectes.", w:"BON", a:"bons", t:"Согласование прилагательных"},
+    {s:"Richesses ___.", w:"SIBÉRIEN", a:"sibériennes", t:"Согласование прилагательных"},
+    {s:"Expositions ___.", w:"MONDIAL", a:"mondiales", t:"Согласование прилагательных"},
+    {s:"Musée d'Orsay ___ les toiles.", w:"MONTRER", a:"montrera", t:"Futur simple"},
+    {s:"Le ___ moyen.", w:"BON", a:"bon", t:"Согласование прилагательных"},
+    {s:"Série de ___.", w:"PLATEAU", a:"plateaux", t:"Множественное число существительных"},
+    {s:"La plus ___ des chutes.", w:"BEAU", a:"belle", t:"Согласование прилагательных"},
+    {s:"Cascade se ___.", w:"JETER", a:"jette", t:"Спряжение в présent"},
+    {s:"Ils ___ 7 sur 10.", w:"ÊTRE", a:"seront", t:"Futur simple"},
+    {s:"Une ___ occasion.", w:"BEAU", a:"belle", t:"Согласование прилагательных"},
+    {s:"___ conditions possibles.", w:"BON", a:"bonnes", t:"Согласование прилагательных"},
+    {s:"Tradition ___ naître.", w:"FAIRE", a:"fait", t:"Спряжение в présent"},
+    {s:"Entreprises ___.", w:"JAPONAIS", a:"japonaises", t:"Согласование прилагательных"},
+    {s:"S'___ la robotique.", w:"APPELER", a:"s'appelle", t:"Спряжение в présent"},
+    {s:"Hommes et aux ___.", w:"ANIMAL", a:"animaux", t:"Множественное число существительных"},
+    {s:"Ce ___ a été agrandi.", w:"BÂTIR", a:"bâtiment", t:"Отглагольные существительные"},
+    {s:"Tombe d'une ___.", w:"RICHE", a:"richesse", t:"Словообразование (другие части речи)"},
+    {s:"Prend la ___ de faire.", w:"DÉCIDER", a:"décision", t:"Отглагольные существительные"},
+    {s:"À toute ___.", w:"VITE", a:"vitesse", t:"Отглагольные существительные"},
+    {s:"De la ___, parfait.", w:"PRÉPARER", a:"préparation", t:"Отглагольные существительные"},
+    {s:"Inspire ___.", w:"PROFONDE", a:"profondément", t:"Наречия на -ment"},
+    {s:"Donnera ___ en toi.", w:"CONFIER", a:"confiance", t:"Отглагольные существительные"},
+    {s:"Les ___ pleuvent.", w:"FÉLICITER", a:"félicitations", t:"Отглагольные существительные"},
+    {s:"Les ___ des Vikings.", w:"EXPÉDIER", a:"expéditions", t:"Отглагольные существительные"},
+    {s:"Des ___ ont dû apparaître.", w:"CHANGER", a:"changements", t:"Отглагольные существительные"},
+    {s:"Les faits ___.", w:"HISTOIRE", a:"historiques", t:"Словообразование (другие части речи)"},
+    {s:"Vérité ___.", w:"ÉVIDENCE", a:"évidente", t:"Словообразование (другие части речи)"},
+    {s:"De quoi ___ avoir peur.", w:"VRAI", a:"vraiment", t:"Наречия на -ment"},
+    {s:"Rue ___.", w:"PRINCIPAL", a:"principale", t:"Согласование прилагательных"},
+    {s:"Vie ___ passionnante.", w:"CULTUREL", a:"culturelle", t:"Согласование прилагательных"},
+    {s:"Alerté les ___.", w:"POMPIER", a:"pompiers", t:"Множественное число существительных"},
+    {s:"Ne ___ pas malade.", w:"SEMBLER", a:"semblait", t:"Имперфект"},
+    {s:"Puis il ___.", w:"REPARTIR", a:"est reparti", t:"Passé composé"},
+    {s:"Des ___ essentielles.", w:"INFORMER", a:"informations", t:"Отглагольные существительные"},
+    {s:"Ville ___.", w:"MONDE", a:"mondiale", t:"Словообразование (другие части речи)"},
+    {s:"D'excellents ___.", w:"NAVIGUER", a:"navigateurs", t:"Отглагольные существительные"},
+    {s:"S'arrête l'___.", w:"ÉDUQUER", a:"éducation", t:"Отглагольные существительные"},
+    {s:"Le ___ célébré 3 jours.", w:"MARIER", a:"mariage", t:"Отглагольные существительные"},
+    {s:"L'___ des pièces.", w:"ORGANISER", a:"organisation", t:"Отглагольные существительные"},
+    {s:"Écoutent ___ des poèmes.", w:"ÉGAL", a:"également", t:"Наречия на -ment"},
+    {s:"Les belles ___.", w:"DANSER", a:"danseuses", t:"Отглагольные существительные"},
+    {s:"Cité ___.", w:"CULTUREL", a:"culturelle", t:"Согласование прилагательных"},
+    {s:"___ gare transsibérienne.", w:"FABULEUX", a:"fabuleuse", t:"Согласование прилагательных"},
+    {s:"Ligne rouge et ligne ___.", w:"VERT", a:"verte", t:"Согласование прилагательных"},
+    {s:"Elle ___ un animal sauter.", w:"SENTIR", a:"a senti", t:"Passé composé"},
+    {s:"Ne s'___ pas d'un chat.", w:"AGIR", a:"agissait", t:"Имперфект"},
+    {s:"Des ___ en animaux.", w:"EXPERT", a:"experts", t:"Множественное число существительных"},
+    {s:"Infusion ___.", w:"MÉDICAL", a:"médicinale", t:"Словообразование (другие части речи)"},
+    {s:"Sur les ___ russes.", w:"FOIRE", a:"foires", t:"Множественное число существительных"},
+    {s:"Une ___ tradition.", w:"NOUVEAU", a:"nouvelle", t:"Согласование прилагательных"},
+    {s:"Père ___ passionné.", w:"ÊTRE", a:"était", t:"Имперфект"},
+    {s:"Les ___, les danseuses.", w:"CHEVAL", a:"chevaux", t:"Множественное число существительных"},
+    {s:"Les ___ rats.", w:"PETIT", a:"petits", t:"Согласование прилагательных"},
+    {s:"Il ___ 83 ans.", w:"VIVRE", a:"a vécu", t:"Passé composé"},
+    {s:"Vacances ___.", w:"SCOLAIRE", a:"scolaires", t:"Согласование прилагательных"},
+    {s:"D'___ avions.", w:"ANCIEN", a:"anciens", t:"Согласование прилагательных"},
+    {s:"Dans la ___ vie.", w:"VRAI", a:"vraie", t:"Согласование прилагательных"},
+    {s:"Les ___ pilote/copilote.", w:"PARTICIPANT", a:"participants", t:"Множественное число существительных"},
+    {s:"Elle ___ augmente.", w:"AUGMENTER", a:"augmente", t:"Спряжение в présent"},
+    {s:"En se ___ vers sa copilote.", w:"TOURNER", a:"tournant", t:"Спряжение в présent"},
+    {s:"À ___ instant.", w:"CE", a:"cet", t:"Местоимения и детерминативы"},
+    {s:"Plein de ___ choses.", w:"BON", a:"bonnes", t:"Согласование прилагательных"},
+    {s:"Kvas ___ à la préparation.", w:"SERVIR", a:"sert", t:"Спряжение в présent"},
+    {s:"Une ___ américaine.", w:"CHERCHEUR", a:"chercheuse", t:"Отглагольные существительные"},
+    {s:"Elle ___ sur ordinateur.", w:"REPRODUIRE", a:"a reproduit", t:"Passé composé"},
+    {s:"Quand ils ___ par des abeilles.", w:"ATTAQUER", a:"sont attaqués", t:"Пассивный залог"},
+    {s:"On ___ parler aux animaux.", w:"POUVOIR", a:"peut", t:"Спряжение в présent"},
+    {s:"Servir à l'___ des distances.", w:"ÉVALUER", a:"évaluation", t:"Отглагольные существительные"},
+    {s:"Le ___ dans l'air.", w:"DÉPLACER", a:"déplacement", t:"Отглагольные существительные"},
+    {s:"Fonctions ___.", w:"MAGIE", a:"magiques", t:"Словообразование (другие части речи)"},
+    {s:"Grand ___.", w:"CHERCHER", a:"chercheur", t:"Отглагольные существительные"},
+    {s:"S'est ___ démocratisé.", w:"LARGE", a:"largement", t:"Наречия на -ment"},
+    {s:"La ___ des cerfs-volants.", w:"BEAU", a:"beauté", t:"Словообразование (другие части речи)"},
+    {s:"Perturbée par l'___.", w:"EXPLOITER", a:"exploitation", t:"Отглагольные существительные"},
+    {s:"L'___ est totale.", w:"OBSCURE", a:"obscurité", t:"Словообразование (другие части речи)"},
+    {s:"Plancher ___.", w:"OCÉAN", a:"océanique", t:"Словообразование (другие части речи)"},
+    {s:"Énergie ___ des végétaux.", w:"UNIQUE", a:"uniquement", t:"Наречия на -ment"},
+    {s:"Animaux des ___.", w:"PROFOND", a:"profondeurs", t:"Отглагольные существительные"},
+    {s:"Tout ce ___ monde.", w:"BEAUTÉ", a:"beau", t:"Словообразование (другие части речи)"},
+    {s:"Passe ___ de temps.", w:"ÉNORME", a:"énormément", t:"Наречия на -ment"},
+    {s:"De l'___ pour les marins.", w:"ADMIRER", a:"admiration", t:"Отглагольные существительные"},
+    {s:"Travail ___.", w:"CONSIDÉRER", a:"considérable", t:"Словообразование (другие части речи)"},
+    {s:"Succès ___.", w:"MONDE", a:"mondial", t:"Словообразование (другие части речи)"},
+    {s:"Des ___ de la SF.", w:"INVENTER", a:"inventeurs", t:"Отглагольные существительные"},
+    {s:"Beaucoup de ___.", w:"CHANGER", a:"changements", t:"Отглагольные существительные"},
+    {s:"Temps de ___.", w:"REPOSER", a:"repos", t:"Отглагольные существительные"},
+    {s:"De plus en plus ___.", w:"NOMBRE", a:"nombreux", t:"Согласование прилагательных"},
+    {s:"Certaines ___.", w:"DIFFICILE", a:"difficultés", t:"Отглагольные существительные"},
+    {s:"On ___ aux parents.", w:"CONSEIL", a:"conseille", t:"Спряжение в présent"},
+    {s:"En tant qu'___.", w:"ACHETER", a:"acheteur", t:"Отглагольные существительные"},
+    {s:"Entretenir les ___.", w:"CONNAÎTRE", a:"connaissances", t:"Отглагольные существительные"},
+    {s:"L'___ abusive du sel.", w:"UTILISER", a:"utilisation", t:"Отглагольные существительные"},
+    {s:"Voeux des ___.", w:"HABITER", a:"habitants", t:"Отглагольные существительные"},
+    {s:"Réaction ___.", w:"CHIMIE", a:"chimique", t:"Словообразование (другие части речи)"},
+    {s:"Prise de ___.", w:"CONSCIENT", a:"conscience", t:"Отглагольные существительные"},
+    {s:"Intempéries ___.", w:"NATURE", a:"naturelles", t:"Словообразование (другие части речи)"},
+    {s:"Il appartient ___ à chacun.", w:"CERTAIN", a:"certainement", t:"Наречия на -ment"},
+    {s:"Former des ___.", w:"SPECIAL", a:"spécialistes", t:"Отглагольные существительные"},
+    {s:"Accueillir des ___.", w:"ÉTUDIER", a:"étudiants", t:"Отглагольные существительные"},
+    {s:"Fonctionner ___.", w:"CORRECT", a:"correctement", t:"Наречия на -ment"},
+    {s:"L'___ spatiale.", w:"EXPLORER", a:"exploration", t:"Отглагольные существительные"},
+    {s:"Le ___ satellite.", w:"SIX", a:"sixième", t:"Согласование прилагательных"},
+    {s:"Expériences ___.", w:"SCIENCE", a:"scientifiques", t:"Словообразование (другие части речи)"},
+    {s:"Sport ___.", w:"RÉGULIÈRE", a:"régulièrement", t:"Наречия на -ment"},
+    {s:"Activité ___.", w:"SPORT", a:"sportive", t:"Словообразование (другие части речи)"},
+    {s:"Ne sait ___ ni lire ni écrire.", w:"PROBABLE", a:"probablement", t:"Наречия на -ment"},
+    {s:"Les ___ décident de se rendre.", w:"HABITER", a:"habitants", t:"Множественное число существительных"},
+    {s:"Épargne les ___.", w:"ART", a:"artistes", t:"Отглагольные существительные"},
+    {s:"Une comédie ___ culte.", w:"MUSIQUE", a:"musicale", t:"Словообразование (другие части речи)"},
+    {s:"Voir son ___ favori.", w:"CHANTER", a:"chanteur", t:"Отглагольные существительные"},
+    {s:"Si tu n'as pas d'___.", w:"INSPIRER", a:"inspiration", t:"Отглагольные существительные"},
+    {s:"Pas ___ les mêmes goûts.", w:"FORCÉ", a:"forcément", t:"Наречия на -ment"},
+    {s:"Déguiser en votre ___ préféré.", w:"ART", a:"artiste", t:"Отглагольные существительные"},
+    {s:"Ne se pressent pas pour l'___.", w:"ANIMER", a:"animer", t:"Инфинитив после предлога"},
+    {s:"Semble ___ déplacé.", w:"VRAI", a:"vraiment", t:"Наречия на -ment"},
+    {s:"De ___ ados.", w:"NOMBRE", a:"nombreux", t:"Согласование прилагательных"},
+    {s:"Suit l'___.", w:"ACTUEL", a:"actualité", t:"Словообразование (другие части речи)"},
+    {s:"Submergés par l'___.", w:"INFORMER", a:"information", t:"Отглагольные существительные"},
+    {s:"Cocktail de ___.", w:"DIVERTIR", a:"divertissements", t:"Отглагольные существительные"},
+    {s:"Meilleurs pour l'___.", w:"ENVIRONNER", a:"environnement", t:"Отглагольные существительные"},
+    {s:"Les ___ français.", w:"CONSOMMER", a:"consommateurs", t:"Отглагольные существительные"},
+    {s:"Une ___ de 18%.", w:"AUGMENTER", a:"augmentation", t:"Отглагольные существительные"},
+    {s:"Ne s'applique ___.", w:"LÉGAL", a:"légalement", t:"Наречия на -ment"},
+    {s:"Produits de ___.", w:"BEAU", a:"beauté", t:"Словообразование (другие части речи)"},
+    {s:"Agriculture ___.", w:"BIOLOGIE", a:"biologique", t:"Словообразование (другие части речи)"},
+    {s:"Cette ___ ville.", w:"PETIT", a:"petite", t:"Согласование прилагательных"},
+    {s:"On trouve des ___.", w:"ÉGLISE", a:"églises", t:"Множественное число существительных"},
+    {s:"Une très ___ icône.", w:"BEAU", a:"belle", t:"Согласование прилагательных"},
+    {s:"Elle ___ peindre.", w:"AIMER", a:"aimait", t:"Имперфект"},
+    {s:"Ses bleus et jaunes ___.", w:"ÉCLATANT", a:"éclatants", t:"Согласование прилагательных"},
+    {s:"Ses ___ très colorés.", w:"TABLEAU", a:"tableaux", t:"Множественное число существительных"},
+    {s:"Il ___ une autre occupation.", w:"TROUVER", a:"trouvait", t:"Имперфект"},
+    {s:"Ma ___.", w:"BEAU", a:"beauté", t:"Словообразование (другие части речи)"},
+    {s:"Je suis très ___.", w:"COURAGE", a:"courageuse", t:"Словообразование (другие части речи)"},
+    {s:"J'ai une ___ solide.", w:"ÉDUQUER", a:"éducation", t:"Отглагольные существительные"},
+    {s:"Faire renaître ___ événement.", w:"CE", a:"cet", t:"Местоимения и детерминативы"},
+    {s:"Elles ___ le 1er Festival.", w:"ORGANISER", a:"ont organisé", t:"Passé composé"},
+    {s:"Très ___ statue.", w:"BEAU", a:"belle", t:"Согласование прилагательных"},
+    {s:"___ de sa construction.", w:"TRAVAIL", a:"travaux", t:"Множественное число существительных"},
+    {s:"Incroyable en ___ saison.", w:"TOUT", a:"toute", t:"Местоимения и детерминативы"},
+    {s:"Raisons peuvent être ___.", w:"DIFFÉRENT", a:"différentes", t:"Согласование прилагательных"},
+    {s:"France ___ se souvenir.", w:"VOULOIR", a:"veut", t:"Спряжение в présent"},
+    {s:"Des ___ américains.", w:"OUVRIER", a:"ouvriers", t:"Множественное число существительных"},
+    {s:"Cela se ___ chaque année.", w:"PASSER", a:"passe", t:"Спряжение в présent"},
+    {s:"Forêt ___.", w:"TROPICAL", a:"tropicale", t:"Согласование прилагательных"},
+    {s:"Mon prof m'initie ___.", w:"ÉGAL", a:"également", t:"Наречия на -ment"},
+    {s:"J'accepte ce ___.", w:"MARIER", a:"mariage", t:"Отглагольные существительные"},
+    {s:"Ville la plus ___.", w:"ANCIEN", a:"ancienne", t:"Согласование прилагательных"},
+    {s:"La ___ façon.", w:"BON", a:"bonne", t:"Согласование прилагательных"},
+    {s:"Les ___ historiques.", w:"MONUMENT", a:"monuments", t:"Множественное число существительных"},
+    {s:"Commission ___ des règles.", w:"PROPOSER", a:"a proposé", t:"Passé composé"},
+    {s:"Le ___ serait d'interdire.", w:"BIEN", a:"mieux", t:"Словообразование (другие части речи)"},
+    {s:"Ces ___ règles.", w:"NOUVEAU", a:"nouvelles", t:"Согласование прилагательных"},
+    {s:"On les ___ à partir de.", w:"FABRIQUER", a:"fabrique", t:"Спряжение в présent"},
+    {s:"Activités ___.", w:"CRÉATIF", a:"créatives", t:"Согласование прилагательных"},
+    {s:"Installées en ___ nature.", w:"PLEIN", a:"pleine", t:"Согласование прилагательных"},
+    {s:"Elle est plus ___.", w:"LONG", a:"longue", t:"Согласование прилагательных"},
+    {s:"___ leurs questions.", w:"RÉPONDRE", a:"répondent", t:"Спряжение в présent"},
+    {s:"En ___ le vendredi libre.", w:"AVOIR", a:"ayant", t:"Инфинитив после предлога"},
+    {s:"Les ___ des élèves.", w:"LOISIR", a:"loisirs", t:"Отглагольные существительные"},
+    {s:"Angoisse qui ___.", w:"SURGIR", a:"surgit", t:"Спряжение в présent"},
+    {s:"Pouvoir être ___.", w:"CONNECTER", a:"connecté", t:"Пассивный залог"},
+    {s:"Étude Uniplaces ___.", w:"EUROPÉEN", a:"européenne", t:"Согласование прилагательных"},
+    {s:"Le concept des ___ bibliothèques.", w:"PREMIER", a:"premières", t:"Согласование прилагательных"},
+    {s:"Kiprianov ___ sa bibliothèque.", w:"OUVRIR", a:"a ouvert", t:"Passé composé"},
+    {s:"Plus de ___ internationale.", w:"TROUPE", a:"troupes", t:"Множественное число существительных"},
+    {s:"Il ___ tout le temps.", w:"DESSINER", a:"dessinait", t:"Имперфект"},
+    {s:"Il ___ très malade.", w:"TOMBER", a:"est tombé", t:"Passé composé"},
+    {s:"Voici des ___.", w:"OISEAU", a:"oiseaux", t:"Множественное число существительных"},
+    {s:"Sont vraiment des ___.", w:"OUTIL", a:"outils", t:"Множественное число существительных"},
+    {s:"Tout ___ en temps.", w:"RÉGLER", a:"réglé", t:"Пассивный залог"},
+    {s:"Tout ce que vous ___.", w:"FAIRE", a:"faites", t:"Спряжение в présent"},
+    {s:"Viens de ___ ma formation.", w:"TERMINER", a:"terminer", t:"Инфинитив после предлога"},
+    {s:"Grâce à ___ formation.", w:"CE", a:"cette", t:"Местоимения и детерминативы"},
+    {s:"Tout ce que j'___.", w:"APPRENDRE", a:"ai appris", t:"Passé composé"},
+    {s:"Pleine ou nouvelle lune.", w:"PLEIN", a:"pleine", t:"Согласование прилагательных"},
+    {s:"Fabriquent et ___.", w:"INSTALLER", a:"installent", t:"Спряжение в présent"},
+    {s:"Ils sont ___ pour l'équilibre.", w:"ESSENTIEL", a:"essentiels", t:"Согласование прилагательных"},
+    {s:"Petits ___ indispensables.", w:"JARDINIER", a:"jardiniers", t:"Множественное число существительных"},
+    {s:"En ___ leur corps.", w:"BOUGER", a:"bougeant", t:"Инфинитив после предлога"},
+    {s:"Façade ___.", w:"MONUMENT", a:"monumentale", t:"Словообразование (другие части речи)"},
+    {s:"Vraiment ___.", w:"REMARQUER", a:"remarquable", t:"Словообразование (другие части речи)"},
+    {s:"Sa ___ est splendide.", w:"DÉCORER", a:"décoration", t:"Отглагольные существительные"},
+    {s:"Faire des ___ de décors.", w:"CHANGER", a:"changements", t:"Отглагольные существительные"},
+    {s:"Couleurs vives et ___.", w:"NATURE", a:"naturelles", t:"Согласование прилагательных"},
+    {s:"Sont ___ décorées.", w:"RICHE", a:"richement", t:"Наречия на -ment"},
+    {s:"Tâches ___.", w:"RÉPÉTITIF", a:"répétitives", t:"Согласование прилагательных"},
+    {s:"Robots ___ les marées noires.", w:"NETTOYER", a:"nettoient", t:"Спряжение в présent"},
+    {s:"Robots ___ trois millions d'emplois.", w:"MENACER", a:"menacent", t:"Спряжение в présent"},
+    {s:"Bottes qui ___ en peau.", w:"FABRIQUER", a:"sont fabriquées", t:"Пассивный залог"},
+    {s:"___ bottes sont indispensables.", w:"CE", a:"ces", t:"Местоимения и детерминативы"},
+    {s:"Zaytsev ___ la doublionka.", w:"INTRODUIRE", a:"a introduit", t:"Passé composé"},
+    {s:"Grandes ___.", w:"MARQUE", a:"marques", t:"Множественное число существительных"},
+    {s:"Monuments ___.", w:"PRINCIPAL", a:"principaux", t:"Согласование прилагательных"},
+    {s:"S'associent et ___ au monde.", w:"METTRE", a:"mettent", t:"Спряжение в présent"}
+  ];
+
+  TASKS.forEach(function(t, i){ t.id = i; });
+
+  // список тем, в порядке появления
+  var THEME_ORDER = [];
+  TASKS.forEach(function(t){
+    if (THEME_ORDER.indexOf(t.t) === -1) THEME_ORDER.push(t.t);
+  });
+  var themeSelect = document.getElementById('themeFilter');
+  THEME_ORDER.forEach(function(th){
+    var count = TASKS.filter(function(t){ return t.t === th; }).length;
+    var opt = document.createElement('option');
+    opt.value = th;
+    opt.textContent = th + ' (' + count + ')';
+    themeSelect.appendChild(opt);
+  });
+
+  // ---------- Состояние ----------
+  var queue = [];
+  var current = null;
+  var totalAnswered = 0;
+  var correctFirstTry = 0;
+  var mistakesByTheme = {};
+  var awaitingNext = false;
+  var activePool = TASKS;
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function normalize(str){
+    return str
+      .trim()
+      .toLowerCase()
+      .replace(/['’ʼ]/g, "'")
+      .replace(/\s+/g, ' ');
+  }
+
+  function byTheme(theme, excludeId){
+    return TASKS.filter(function(t){ return t.t === theme && t.id !== excludeId; });
+  }
+
+  function startSession(pool){
+    activePool = pool;
+    queue = shuffle(pool);
+    totalAnswered = 0;
+    correctFirstTry = 0;
+    mistakesByTheme = {};
+    document.getElementById('summaryArea').style.display = 'none';
+    document.getElementById('quizArea').style.display = 'block';
+    document.getElementById('setupRow').style.display = 'flex';
+    nextQuestion();
+  }
+
+  function totalPlanned(){
+    return totalAnswered + queue.length + (current ? 1 : 0);
+  }
+
+  function updateStats(){
+    document.getElementById('statsLine').textContent =
+      totalAnswered + ' / ' + totalPlanned() + ' · верно ' + correctFirstTry;
+    var pct = totalPlanned() > 0 ? Math.round((totalAnswered / totalPlanned()) * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  function nextQuestion(){
+    awaitingNext = false;
+    document.getElementById('feedback').className = 'feedback';
+    document.getElementById('feedback').innerHTML = '';
+    document.getElementById('nextRow').className = 'next-row';
+    document.getElementById('answerForm').style.display = 'flex';
+
+    if (queue.length === 0){
+      finishSession();
+      return;
+    }
+    current = queue.shift();
+    document.getElementById('themeTag').textContent = current.t;
+    document.getElementById('sentenceText').innerHTML = current.s.replace('___', '<span class="blank">&nbsp;</span>');
+    document.getElementById('givenWord').textContent = current.w;
+    var input = document.getElementById('answerInput');
+    input.value = '';
+    updateStats();
+    setTimeout(function(){ input.focus({preventScroll:true}); }, 50);
+  }
+
+  function finishSession(){
+    current = null;
+    document.getElementById('quizArea').style.display = 'none';
+    document.getElementById('setupRow').style.display = 'none';
+    var summary = document.getElementById('summaryArea');
+    summary.style.display = 'block';
+    document.getElementById('scoreText').textContent = correctFirstTry + ' / ' + totalAnswered;
+
+    var themes = Object.keys(mistakesByTheme).sort(function(a,b){
+      return mistakesByTheme[b] - mistakesByTheme[a];
+    });
+    var weakDiv = document.getElementById('weakThemes');
+    if (themes.length === 0){
+      weakDiv.innerHTML = '<p>Ни одной ошибки — отличный результат!</p>';
+    } else {
+      var html = '<p>Темы, где были ошибки:</p><ul>';
+      themes.forEach(function(th){
+        html += '<li>' + th + ' — ошибок: ' + mistakesByTheme[th] + '</li>';
+      });
+      html += '</ul>';
+      weakDiv.innerHTML = html;
+    }
+
+    window._lastWeakThemes = themes;
+    updateStats();
+  }
+
+  function submitAnswer(){
+    if (!current || awaitingNext) return;
+    var input = document.getElementById('answerInput');
+    var val = normalize(input.value);
+    var correct = normalize(current.a);
+    var fb = document.getElementById('feedback');
+    totalAnswered++;
+
+    if (val.length > 0 && val === correct){
+      correctFirstTry++;
+      fb.className = 'feedback correct show';
+      fb.innerHTML = 'Верно — <strong>' + current.a + '</strong>.';
+    } else {
+      mistakesByTheme[current.t] = (mistakesByTheme[current.t] || 0) + 1;
+      fb.className = 'feedback wrong show';
+      fb.innerHTML = 'Правильный ответ: <strong>' + current.a + '</strong>.' +
+        '<span class="margin-note">Тема «' + current.t + '» — добавляю ещё задания на отработку.</span>';
+
+      var extra = shuffle(byTheme(current.t, current.id)).slice(0, 2);
+      if (extra.length === 0){
+        extra = [current];
+      }
+      var insertAt = Math.min(1, queue.length);
+      queue.splice.apply(queue, [insertAt, 0].concat(extra));
+    }
+
+    document.getElementById('answerForm').style.display = 'none';
+    document.getElementById('nextRow').className = 'next-row show';
+    awaitingNext = true;
+    updateStats();
+    setTimeout(function(){ document.getElementById('nextBtn').focus({preventScroll:true}); }, 30);
+  }
+
+  document.getElementById('answerForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    submitAnswer();
+  });
+
+  document.getElementById('nextBtn').addEventListener('click', function(){
+    nextQuestion();
+  });
+
+  document.getElementById('restartAllBtn').addEventListener('click', function(){
+    themeSelect.value = '';
+    startSession(TASKS);
+  });
+
+  document.getElementById('restartWeakBtn').addEventListener('click', function(){
+    var themes = window._lastWeakThemes || [];
+    if (themes.length === 0){
+      startSession(TASKS);
+      return;
+    }
+    var pool = TASKS.filter(function(t){ return themes.indexOf(t.t) !== -1; });
+    startSession(pool);
+  });
+
+  themeSelect.addEventListener('change', function(){
+    var val = themeSelect.value;
+    var pool = val ? TASKS.filter(function(t){ return t.t === val; }) : TASKS;
+    startSession(pool);
+  });
+
+  // старт
+  startSession(TASKS);
+
+})();
+</script>
+</body>
+</html>
